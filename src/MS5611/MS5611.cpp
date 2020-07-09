@@ -153,14 +153,14 @@ void MS5611::convertMeasurement(uint32_t D1, uint32_t D2) {
 
 // Second order temperature compensation
 #ifndef MS5611_SKIP_COMP
-  int32_t T2, off2, sens2;
+  uint32_t T2, off2, sens2;
   if (Temp < 2000) {
     T2 = (uint64_t)dT * (uint64_t)dT >> 31;
     off2 = 5 * (Temp - 2000) * (Temp - 2000) >> 1;
     sens2 = off2 >> 1;
 
     if (Temp < -1500) {
-      int32_t dtdt2;
+      uint32_t dtdt2;
       dtdt2 = (Temp + 1500) * (Temp + 1500);
       off2 += 7 * dtdt2;
       sens2 += 11 * dtdt2 >> 1;
