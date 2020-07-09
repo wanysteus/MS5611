@@ -19,16 +19,16 @@ Library for the MS5611 Barometric Pressure Sensor based on the Arduino framework
 ├── examples/                   // Example sketches
 │   └── BasicPressure/
 │       └── BasicPressure.ino
-├── library.properties
-├── LICENSE
-├── platformio.ini
-├── README.md                   // This file
-├── src/                        // Source files for the library
+├── src/                        // Source files for the library, compatible with PlatformIO
 │   ├── MS5611
 │   │   ├── MS5611.cpp
 │   │   └── MS5611.h
-│   └── MS5611.h
+│   └── MS5611.h                // Dummy header for compliance with the Arduino library format
 ├── test/                       // Unit tests
-│   └── test_main.cpp
-└── test.py
+│   ├── test_main.cpp
+│   └── test.py
+├── library.properties
+├── LICENSE
+├── platformio.ini
+└── README.md                   // This file
 ```
