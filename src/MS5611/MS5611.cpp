@@ -1,8 +1,5 @@
 #include "MS5611.h"
 
-#include <Arduino.h>
-#include <SPI.h>
-
 /*
   MS5611 constructor
 */
