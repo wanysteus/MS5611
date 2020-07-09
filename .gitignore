@@ -1,3 +1,6 @@
 .pio/*
 .vscode/*
 env/*
+
+#PlatformIO outputs for unit tests
+test/output_export.cpp

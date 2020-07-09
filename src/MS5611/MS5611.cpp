@@ -1,10 +1,55 @@
-#include "MS5611.h"
+/* MS5611.cpp
 
-#include <Arduino.h>
-#include <SPI.h>
+Author: Erwan Caffier
+Version: 0.1.0
+
+Description:
+  Set of utilities to use the MS5611 barometric pressure sensors based on the
+  Arduino framework. Only communication with the chip over SPI is supported.
+
+License:
+  MIT License
+
+  Copyright (c) 2020 Erwan Caffier
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
+#include "MS5611.h"
 
 /*
   MS5611 constructor
+*/
+MS5611::MS5611(uint8_t cs_pin, SPIClass &spi_interface) {
+  _cs_pin = cs_pin;
+  _spi = &spi_interface;
+  _spi_freq = MS5611_MAX_SPI_FREQ;
+
+  _spi_settings = SPISettings(_spi_freq, MSBFIRST, SPI_MODE0);
+
+  _spi->begin();
+  pinMode(_cs_pin, OUTPUT);
+  csbHigh();
+}
+
+/*
+  MS5611 constructor with user selectable SPI frequency
 */
 MS5611::MS5611(uint8_t cs_pin, SPIClass &spi_interface, uint32_t spi_freq = MS5611_MAX_SPI_FREQ) {
   _cs_pin = cs_pin;
@@ -15,7 +60,7 @@ MS5611::MS5611(uint8_t cs_pin, SPIClass &spi_interface, uint32_t spi_freq = MS56
 
   _spi->begin();
   pinMode(_cs_pin, OUTPUT);
-  deselect();
+  csbHigh();
 }
 
 /*
@@ -101,10 +146,10 @@ uint8_t MS5611::setOSR(uint8_t osr) {
 */
 void MS5611::reset() {
   _spi->beginTransaction(_spi_settings);
-  select();
+  csbLow();
   _spi->transfer(MS5611_RESET);
   delay(4);
-  deselect();
+  csbHigh();
   _spi->endTransaction();
 }
 
@@ -153,14 +198,14 @@ void MS5611::convertMeasurement(uint32_t D1, uint32_t D2) {
 
 // Second order temperature compensation
 #ifndef MS5611_SKIP_COMP
-  int32_t T2, off2, sens2;
+  uint32_t T2, off2, sens2;
   if (Temp < 2000) {
     T2 = (uint64_t)dT * (uint64_t)dT >> 31;
     off2 = 5 * (Temp - 2000) * (Temp - 2000) >> 1;
     sens2 = off2 >> 1;
 
     if (Temp < -1500) {
-      int32_t dtdt2;
+      uint32_t dtdt2;
       dtdt2 = (Temp + 1500) * (Temp + 1500);
       off2 += 7 * dtdt2;
       sens2 += 11 * dtdt2 >> 1;
@@ -211,9 +256,9 @@ uint32_t MS5611::readAdc(uint8_t addr) {
 uint8_t MS5611::readByte(uint8_t address) {
   uint8_t val;
   _spi->beginTransaction(_spi_settings);
-  select();
+  csbLow();
   val = _spi->transfer(address);
-  deselect();
+  csbHigh();
   return val;
 }
 
@@ -226,7 +271,7 @@ uint8_t MS5611::readByte(uint8_t address) {
 */
 void MS5611::readBytes(uint8_t addr, uint8_t count, uint8_t *data) {
   _spi->beginTransaction(_spi_settings);
-  select();
+  csbLow();
 
   _spi->transfer(addr);
   for (uint8_t i = 0; i < count; i++) {
@@ -234,19 +279,19 @@ void MS5611::readBytes(uint8_t addr, uint8_t count, uint8_t *data) {
   }
 
   _spi->endTransaction();
-  deselect();
+  csbHigh();
 }
 
 /*
   Pull the CS pin LOW to enable the SPI interface on the chip
 */
-void MS5611::select() {
+void MS5611::csbLow() {
   digitalWrite(_cs_pin, LOW);
 }
 
 /*
   Pull the CS pin HIGH to disable the SPI interface on the chip
 */
-void MS5611::deselect() {
+void MS5611::csbHigh() {
   digitalWrite(_cs_pin, HIGH);
 }

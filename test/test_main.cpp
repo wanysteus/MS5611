@@ -4,6 +4,9 @@
 #define UNIT_TESTING
 #include "MS5611.h"
 
+#define PRESSURE_ERROR_MAX 2.0     // 0.02 mbar
+#define TEMPERATURE_ERROR_MAX 2.0  // 0.02°C
+
 MS5611 my_sensor(17, SPI, 10000000);
 
 void overrideCalibration() {
@@ -16,82 +19,72 @@ void overrideCalibration() {
   my_sensor._c[6] = 28312;
 }
 
-void testPressureConversion0() {
+void test_pressure____1000mbar__20C() {
   my_sensor.convertMeasurement(9085466, 8569150);
-  TEST_ASSERT_EQUAL(100009, my_sensor.pressure);
+  TEST_ASSERT_FLOAT_WITHIN(PRESSURE_ERROR_MAX, 100009.07, my_sensor.pressure);
 }
 
-void testTemperatureConversion0() {
+void test_temperature_1000mbar__20C() {
   my_sensor.convertMeasurement(9085466, 8569150);
-  TEST_ASSERT_EQUAL(2007, my_sensor.temperature);
+  TEST_ASSERT_FLOAT_WITHIN(TEMPERATURE_ERROR_MAX, 2007.99, my_sensor.temperature);
 }
 
-void testPressureConversion1() {
-  my_sensor.convertMeasurement(9085466, 6869150);
-  TEST_ASSERT_EQUAL(83499, my_sensor.pressure);
+void test_pressure_____800mbar_m50C() {
+  my_sensor.convertMeasurement(8734466, 6869150);
+  TEST_ASSERT_FLOAT_WITHIN(PRESSURE_ERROR_MAX, 77923.45, my_sensor.pressure);
 }
 
-void testTemperatureConversion1() {
-  my_sensor.convertMeasurement(9085466, 6869150);
-  TEST_ASSERT_EQUAL(-5072, my_sensor.temperature);
+void test_temperature__800mbar_m50C() {
+  my_sensor.convertMeasurement(8734466, 6869150);
+  TEST_ASSERT_FLOAT_WITHIN(TEMPERATURE_ERROR_MAX, -5071.62, my_sensor.temperature);
 }
 
-void testPressureConversion2() {
-  my_sensor.convertMeasurement(4265350, 6269150);
-  TEST_ASSERT_EQUAL(5139, my_sensor.pressure);
+void test_pressure______20mbar__35C() {
+  my_sensor.convertMeasurement(3971650, 8995673);
+  TEST_ASSERT_FLOAT_WITHIN(PRESSURE_ERROR_MAX, 2022.74, my_sensor.pressure);
 }
 
-void testTemperatureConversion2() {
-  my_sensor.convertMeasurement(4265350, 6269150);
-  TEST_ASSERT_EQUAL(-8213, my_sensor.temperature);
+void test_temperature___20mbar__35C() {
+  my_sensor.convertMeasurement(3971650, 8995673);
+  TEST_ASSERT_FLOAT_WITHIN(TEMPERATURE_ERROR_MAX, 3447.52, my_sensor.temperature);
 }
 
-void testPressureConversion3() {
-  my_sensor.convertMeasurement(4265350, 7598340);
-  TEST_ASSERT_EQUAL(7652, my_sensor.pressure);
+void test_pressure_____150mbar_m20C() {
+  my_sensor.convertMeasurement(4675350, 7518340);
+  TEST_ASSERT_FLOAT_WITHIN(PRESSURE_ERROR_MAX, 14823.33, my_sensor.pressure);
 }
 
-void testTemperatureConversion3() {
-  my_sensor.convertMeasurement(4265350, 7598340);
-  TEST_ASSERT_EQUAL(-1705, my_sensor.temperature);
+void test_temperature__150mbar_m20C() {
+  my_sensor.convertMeasurement(4675350, 7518340);
+  TEST_ASSERT_FLOAT_WITHIN(TEMPERATURE_ERROR_MAX, -2050.43, my_sensor.temperature);
 }
 
-void testPressureConversion4() {
-  my_sensor.convertMeasurement(6087840, 7990420);
-  TEST_ASSERT_EQUAL(41055, my_sensor.pressure);
+void test_pressure_____400mbar___6C() {
+  my_sensor.convertMeasurement(6027840, 8190420);
+  TEST_ASSERT_FLOAT_WITHIN(PRESSURE_ERROR_MAX, 40517.36, my_sensor.pressure);
 }
 
-void testTemperatureConversion4() {
-  my_sensor.convertMeasurement(6087840, 7990420);
-  TEST_ASSERT_EQUAL(-100, my_sensor.temperature);
+void test_temperature__400mbar___6C() {
+  my_sensor.convertMeasurement(6027840, 8190420);
+  TEST_ASSERT_FLOAT_WITHIN(TEMPERATURE_ERROR_MAX, 663.79, my_sensor.temperature);
 }
 
-void testPressureConversion5() {
-  my_sensor.convertMeasurement(8894340, 8190420);
-  TEST_ASSERT_EQUAL(93850, my_sensor.pressure);
-}
-
-void testTemperatureConversion5() {
-  my_sensor.convertMeasurement(8894340, 8190420);
-  TEST_ASSERT_EQUAL(664, my_sensor.temperature);
-}
-
-void testPressureConversion6() {
+void test_pressure____1200mbar__50C() {
   my_sensor.convertMeasurement(9764720, 9390420);
-  TEST_ASSERT_EQUAL(119078, my_sensor.pressure);
+  TEST_ASSERT_FLOAT_WITHIN(PRESSURE_ERROR_MAX, 119078.47, my_sensor.pressure);
 }
 
-void testTemperatureConversion6() {
+void test_temperature_1200mbar__50C() {
   my_sensor.convertMeasurement(9764720, 9390420);
-  TEST_ASSERT_EQUAL(4779, my_sensor.temperature);
+  TEST_ASSERT_FLOAT_WITHIN(TEMPERATURE_ERROR_MAX, 4779.82, my_sensor.temperature);
 }
 
-void testDefaultOversampling() {
+void test_default_oversampling() {
   TEST_ASSERT_EQUAL(MS5611_OSR_256, my_sensor._osr);
   TEST_ASSERT_GREATER_OR_EQUAL(0.6, my_sensor._del);
 }
 
-void testOversamplingSettings() {
+void test_oversampling_settings() {
   my_sensor.setOSR(MS5611_OSR_256);
   TEST_ASSERT_EQUAL(MS5611_OSR_256, my_sensor._osr);
   TEST_ASSERT_GREATER_OR_EQUAL(0.6, my_sensor._del);
@@ -120,22 +113,21 @@ void setup() {
   overrideCalibration();
 
   UNITY_BEGIN();
-  RUN_TEST(testDefaultOversampling);
-  RUN_TEST(testOversamplingSettings);
-  RUN_TEST(testPressureConversion0);
-  RUN_TEST(testTemperatureConversion0);
-  RUN_TEST(testPressureConversion1);
-  RUN_TEST(testTemperatureConversion1);
-  RUN_TEST(testPressureConversion2);
-  RUN_TEST(testTemperatureConversion2);
-  RUN_TEST(testPressureConversion3);
-  RUN_TEST(testTemperatureConversion3);
-  RUN_TEST(testPressureConversion4);
-  RUN_TEST(testTemperatureConversion4);
-  RUN_TEST(testPressureConversion5);
-  RUN_TEST(testTemperatureConversion5);
-  RUN_TEST(testPressureConversion6);
-  RUN_TEST(testTemperatureConversion6);
+  RUN_TEST(test_default_oversampling);
+  RUN_TEST(test_oversampling_settings);
+  RUN_TEST(test_pressure____1000mbar__20C);
+  RUN_TEST(test_temperature_1000mbar__20C);
+  RUN_TEST(test_pressure_____800mbar_m50C);
+  RUN_TEST(test_temperature__800mbar_m50C);
+  RUN_TEST(test_pressure______20mbar__35C);
+  RUN_TEST(test_temperature___20mbar__35C);
+  RUN_TEST(test_pressure_____150mbar_m20C);
+  RUN_TEST(test_temperature__150mbar_m20C);
+  RUN_TEST(test_pressure_____400mbar___6C);
+  RUN_TEST(test_temperature__400mbar___6C);
+  RUN_TEST(test_pressure____1200mbar__50C);
+  RUN_TEST(test_temperature_1200mbar__50C);
+
   UNITY_END();
 }
 

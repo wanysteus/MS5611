@@ -21,6 +21,7 @@
 
 class MS5611 {
  public:
+  MS5611(uint8_t cs_pin, SPIClass &spi_interface);
   MS5611(uint8_t cs_pin, SPIClass &spi_interface, uint32_t spi_freq);
   void begin();
   void update();
@@ -38,8 +39,8 @@ class MS5611 {
   uint32_t readAdc(uint8_t addr);
   uint8_t readByte(uint8_t address);
   void readBytes(uint8_t address, uint8_t count, uint8_t *data);
-  void select();
-  void deselect();
+  void csbLow();
+  void csbHigh();
 
   // Initialized at instance creation
   uint8_t _cs_pin;
