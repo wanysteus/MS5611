@@ -13,7 +13,6 @@ The pins of MS5611 are **NOT 5V tolerant**. Always use 3.3V microcontrollers (li
 ## TODO
 
 - [ ] Add CRC
-- [ ] Write keywords
 - [ ] Use non-blocking delays
 
 ## Installation
@@ -58,8 +57,6 @@ platformio test
 ├── test/                       // Unit tests
 │   ├── test_main.cpp
 │   └── test.py
-├── library.properties
-├── LICENSE
-├── platformio.ini
+├── platformio.ini              // Configuration file for PlatformIO
 └── README.md                   // This file
 ```
