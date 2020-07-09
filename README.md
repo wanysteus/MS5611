@@ -2,6 +2,10 @@
 
 Library for the MS5611 Barometric Pressure Sensor based on the Arduino framework. This library is intended to use the SPI interface only. This library has been tested on Teensy 3.6 and Arduino Nano.
 
+**/!\ WARNING /!\\**
+
+The pins of MS5611 are **NOT 5V tolerant**. Always use 3.3V microcontrollers (like the Teensy 3.6) or make sure to add a level shifter between your microcontroller and your MS5611 when using a 5V microncontroller (like the Arduino Nano)
+
 **/!\ NOTICE /!\\**
 
 **Pre-release, not fully tested yet**
@@ -20,13 +24,13 @@ This repository can be downloaded as a zip file and extracted in your Arduino li
 
 ### Development
 
-1. Install PlatformIO
+1. Install PlatformIO on your system
 2. Clone this repository
 
 Run the project in a PlatformIO terminal using
 
 ```shell
-platformio run -t upload # Defaults, upload to Teensy 3.6
+platformio run -t upload # Default, upload to Teensy 3.6
 # OR
 platformio run -t upload -e nano
 ```
