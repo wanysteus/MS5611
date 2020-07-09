@@ -29,8 +29,8 @@ void loop() {
   int32_t temperature = my_sensor.temperature;  // In 0.01°C
   int32_t pressure = my_sensor.pressure;        // In 0.01 mbar
 
-  float_t temperature_f = temperature / 100.0f;
-  float_t pressure_f = pressure / 100.0f;
+  float temperature_f = temperature / 100.0f;
+  float pressure_f = pressure / 100.0f;
 
   Serial.print("Temperature: ");
   Serial.print(temperature_f);
