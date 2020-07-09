@@ -6,15 +6,6 @@ Library for the MS5611 Barometric Pressure Sensor based on the Arduino framework
 
 The pins of MS5611 are **NOT 5V tolerant**. Always use 3.3V microcontrollers (like the Teensy 3.6) or make sure to add a level shifter between your microcontroller and your MS5611 when using a 5V microncontroller (like the Arduino Nano)
 
-**/!\ NOTICE /!\\**
-
-**Pre-release, not fully tested yet**
-
-## TODO
-
-- [ ] Add CRC
-- [ ] Use non-blocking delays
-
 ## Installation
 
 ### As a library

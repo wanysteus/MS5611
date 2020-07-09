@@ -1,7 +1,7 @@
 /* MS5611.cpp
 
 Author: Erwan Caffier
-Version: 0.1.dev
+Version: 0.1.0
 
 Description:
   Set of utilities to use the MS5611 barometric pressure sensors based on the
