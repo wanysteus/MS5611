@@ -3,6 +3,21 @@
 /*
   MS5611 constructor
 */
+MS5611::MS5611(uint8_t cs_pin, SPIClass &spi_interface) {
+  _cs_pin = cs_pin;
+  _spi = &spi_interface;
+  _spi_freq = MS5611_MAX_SPI_FREQ;
+
+  _spi_settings = SPISettings(_spi_freq, MSBFIRST, SPI_MODE0);
+
+  _spi->begin();
+  pinMode(_cs_pin, OUTPUT);
+  csbHigh();
+}
+
+/*
+  MS5611 constructor with user selectable SPI frequency
+*/
 MS5611::MS5611(uint8_t cs_pin, SPIClass &spi_interface, uint32_t spi_freq = MS5611_MAX_SPI_FREQ) {
   _cs_pin = cs_pin;
   _spi = &spi_interface;

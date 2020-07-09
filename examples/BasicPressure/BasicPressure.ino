@@ -3,8 +3,8 @@
 
 #include "MS5611.h"
 
-// Create a MS5611 instance for a chip on SPI0, at 10MHz, and with the Chip Select pin connected to pin 17
-MS5611 my_sensor(17, SPI, 10000000);
+// Create a MS5611 instance for a chip on SPI0, and with the Chip Select pin connected to pin 17
+MS5611 my_sensor(17, SPI);
 
 void setup() {
   Serial.begin(115200);

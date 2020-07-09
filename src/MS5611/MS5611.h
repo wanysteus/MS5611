@@ -21,6 +21,7 @@
 
 class MS5611 {
  public:
+  MS5611(uint8_t cs_pin, SPIClass &spi_interface);
   MS5611(uint8_t cs_pin, SPIClass &spi_interface, uint32_t spi_freq);
   void begin();
   void update();
