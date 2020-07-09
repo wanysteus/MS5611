@@ -12,7 +12,7 @@ MS5611::MS5611(uint8_t cs_pin, SPIClass &spi_interface, uint32_t spi_freq = MS56
 
   _spi->begin();
   pinMode(_cs_pin, OUTPUT);
-  deselect();
+  csbHigh();
 }
 
 /*
@@ -98,10 +98,10 @@ uint8_t MS5611::setOSR(uint8_t osr) {
 */
 void MS5611::reset() {
   _spi->beginTransaction(_spi_settings);
-  select();
+  csbLow();
   _spi->transfer(MS5611_RESET);
   delay(4);
-  deselect();
+  csbHigh();
   _spi->endTransaction();
 }
 
@@ -208,9 +208,9 @@ uint32_t MS5611::readAdc(uint8_t addr) {
 uint8_t MS5611::readByte(uint8_t address) {
   uint8_t val;
   _spi->beginTransaction(_spi_settings);
-  select();
+  csbLow();
   val = _spi->transfer(address);
-  deselect();
+  csbHigh();
   return val;
 }
 
@@ -223,7 +223,7 @@ uint8_t MS5611::readByte(uint8_t address) {
 */
 void MS5611::readBytes(uint8_t addr, uint8_t count, uint8_t *data) {
   _spi->beginTransaction(_spi_settings);
-  select();
+  csbLow();
 
   _spi->transfer(addr);
   for (uint8_t i = 0; i < count; i++) {
@@ -231,19 +231,19 @@ void MS5611::readBytes(uint8_t addr, uint8_t count, uint8_t *data) {
   }
 
   _spi->endTransaction();
-  deselect();
+  csbHigh();
 }
 
 /*
   Pull the CS pin LOW to enable the SPI interface on the chip
 */
-void MS5611::select() {
+void MS5611::csbLow() {
   digitalWrite(_cs_pin, LOW);
 }
 
 /*
   Pull the CS pin HIGH to disable the SPI interface on the chip
 */
-void MS5611::deselect() {
+void MS5611::csbHigh() {
   digitalWrite(_cs_pin, HIGH);
 }
